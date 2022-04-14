@@ -2,7 +2,6 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-st.write("Testing")
 
 ### P1.2 ###
 
@@ -64,17 +63,22 @@ st.write("## Age-specific cancer mortality rates")
 
 ### P2.1 ###
 # replace with st.slider
-year = 2012
+years_all = df["Year"].drop_duplicates()
+
+slider_year = st.slider("Select year:", min_value = min(years_all), max_value = max(years_all))
+
+year = slider_year
 subset = df[df["Year"] == year]
 ### P2.1 ###
 
 
 ### P2.2 ###
 # replace with st.radio
-sex = "M"
+radio_gender = st.radio("Select gender:", ["M", "F"])
+
+sex = radio_gender
 subset = subset[subset["Sex"] == sex]
 ### P2.2 ###
-
 
 ### P2.3 ###
 # replace with st.multiselect
@@ -88,13 +92,21 @@ countries = [
     "Thailand",
     "Turkey",
 ]
-subset = subset[subset["Country"].isin(countries)]
+
+countries_all = df["Country"].drop_duplicates()
+
+multiselect_country = st.multiselect("Select Country:", countries_all, default = countries)
+
+subset = subset[subset["Country"].isin(multiselect_country )]
 ### P2.3 ###
 
 
 ### P2.4 ###
 # replace with st.selectbox
-cancer = "Malignant neoplasm of stomach"
+
+select_cancer = st.selectbox("Select cancer:",df["Cancer"].drop_duplicates() )
+
+cancer = select_cancer
 subset = subset[subset["Cancer"] == cancer]
 ### P2.4 ###
 
@@ -121,7 +133,18 @@ chart = alt.Chart(subset).mark_bar().encode(
 )
 ### P2.5 ###
 
+
+
+chart2 = alt.Chart(subset).mark_rect().encode(
+    x=alt.X('Age:O'),
+    y=alt.Y('Country:O'),
+    color=alt.Color('Rate:Q', scale=alt.Scale(type='log', domain=(0.005, 1), clamp=True))
+)
+
+
+
 st.altair_chart(chart, use_container_width=True)
+st.altair_chart(chart2, use_container_width=True)
 
 countries_in_subset = subset["Country"].unique()
 if len(countries_in_subset) != len(countries):
