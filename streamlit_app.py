@@ -2,7 +2,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-# st.write("Testing")
+st.write("Testing")
 
 ### P1.2 ###
 
